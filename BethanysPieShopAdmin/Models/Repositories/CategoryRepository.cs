@@ -22,5 +22,11 @@ namespace BethanysPieShopAdmin.Models.Repositories
             return await _bethanysPieShopDbContext.Categories.OrderBy(p => 
             p.CategoryId).ToListAsync();
         }
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _bethanysPieShopDbContext.Categories.
+                Include(p => p.Pies).
+                FirstOrDefaultAsync(c => c.CategoryId == id);
+        }
     }
 }

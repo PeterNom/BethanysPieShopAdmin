@@ -23,7 +23,7 @@ else
                 <td>@category.CategoryId</td>
                 <td>@category.Name</td>
                 <td>@category.DateAdded.Value.ToShortDateString()</td>
-
+                <td><a asp-action="Details" asp-rout-id="@category.CategoryId">Details</a></td>
             </tr>
         }
     </table>

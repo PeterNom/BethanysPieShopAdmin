@@ -21,5 +21,16 @@ namespace BethanysPieShopAdmin.Controllers
             };
             return View(model);
         }
+
+        public async Task<IActionResult> details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var selectedCategory = await _categoryRepository.GetCategoryByIdAsync(id.Value);
+            return View(selectedCategory);
+        }
     }
 }
