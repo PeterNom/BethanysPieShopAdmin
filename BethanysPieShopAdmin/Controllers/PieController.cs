@@ -1,5 +1,6 @@
 ﻿using BethanysPieShopAdmin.Models;
 using BethanysPieShopAdmin.Models.Repositories;
+using BethanysPieShopAdmin.Utilities;
 using BethanysPieShopAdmin.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -159,6 +160,19 @@ namespace BethanysPieShopAdmin.Controllers
 
             var selectedPie = await _pieRepository.GetPieByIdAsync(pieId.Value);
             return View(selectedPie);
+        }
+
+        
+        private int pageSize = 5;
+
+        public async Task<IActionResult> IndexPaging(int? pageNumber)
+        {
+            var pies = await _pieRepository.GetPiesPagedAsync(pageNumber, pageSize);
+            pageNumber ??= 1;
+
+            var count = await _pieRepository.GetAllPiesCountAsync();
+
+            return View(new PagedList<Pie>(pies.ToList(), count, pageNumber.Value, pageSize));
         }
     }
 }

@@ -67,5 +67,22 @@ namespace BethanysPieShopAdmin.Models.Repositories
                 throw new ArgumentException($"The pie to delete can't be found.");
             }
         }
+
+        async Task<int> IPieRepository.GetAllPiesCountAsync()
+        {
+            var count = await _bethanysPieShopDbContext.Pies.CountAsync();
+
+            return count;
+        }
+
+        async Task<IEnumerable<Pie>> IPieRepository.GetPiesPagedAsync(int? pageNumber, int pageSize)
+        {
+            IQueryable<Pie> pies = from p in _bethanysPieShopDbContext.Pies select p;
+
+            pageNumber ??= 1;
+            pies = pies.Skip((pageNumber.Value-1) * pageSize).Take(pageSize);
+
+            return await pies.AsNoTracking().ToListAsync();
+        }
     }
 }
