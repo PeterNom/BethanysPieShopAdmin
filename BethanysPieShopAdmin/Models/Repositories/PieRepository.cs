@@ -84,5 +84,43 @@ namespace BethanysPieShopAdmin.Models.Repositories
 
             return await pies.AsNoTracking().ToListAsync();
         }
+
+        public async Task<IEnumerable<Pie>> GetPiesSortedAndPagedAsync(string sortBy, int? pageNumber, int pageSize)
+        {
+            IQueryable<Pie> allPies = from p in _bethanysPieShopDbContext.Pies
+                                      select p;
+            IQueryable<Pie> pies;
+
+            switch (sortBy)
+            {
+                case "name_desc":
+                    pies = allPies.OrderByDescending(p => p.Name);
+                    break;
+                case "name":
+                    pies = allPies.OrderBy(p => p.Name);
+                    break;
+                case "id_desc":
+                    pies = allPies.OrderByDescending(p => p.PieId);
+                    break;
+                case "id":
+                    pies = allPies.OrderBy(p => p.PieId);
+                    break;
+                case "price_desc":
+                    pies = allPies.OrderByDescending(p => p.Price);
+                    break;
+                case "price":
+                    pies = allPies.OrderBy(p => p.Price);
+                    break;
+                default:
+                    pies = allPies.OrderBy(p => p.PieId);
+                    break;
+            }
+
+            pageNumber ??= 1;
+
+            pies = pies.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize);
+
+            return await pies.AsNoTracking().ToListAsync(); ;
+        }
     }
 }
