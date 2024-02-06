@@ -122,5 +122,23 @@ namespace BethanysPieShopAdmin.Models.Repositories
 
             return await pies.AsNoTracking().ToListAsync(); ;
         }
+
+        public async Task<IEnumerable<Pie>> SearchPies(string searchQuery, int? categoryId)
+        {
+            var pies = from p in _bethanysPieShopDbContext.Pies
+                       select p;
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                pies = pies.Where(s => s.Name.Contains(searchQuery) || s.ShortDescription.Contains(searchQuery) || s.LongDescription.Contains(searchQuery));
+            }
+
+            if (categoryId != null)
+            {
+                pies = pies.Where(s => s.CategoryId == categoryId);
+            }
+
+            return await pies.ToListAsync();
+        }
     }
 }
