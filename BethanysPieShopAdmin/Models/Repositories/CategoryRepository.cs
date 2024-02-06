@@ -11,9 +11,10 @@ namespace BethanysPieShopAdmin.Models.Repositories
         private IMemoryCache _memoryCache;
         private const string AllCategoriesCacheName = "AllCategories";
 
-        public CategoryRepository(BethanysPieShopDbContext bethanysPieShopDbContext)
+        public CategoryRepository(BethanysPieShopDbContext bethanysPieShopDbContext, IMemoryCache memoryCache)
         {
             _bethanysPieShopDbContext = bethanysPieShopDbContext;
+            _memoryCache = memoryCache;
         }
 
         public IEnumerable<Category> GetAllCategories()
@@ -109,5 +110,25 @@ namespace BethanysPieShopAdmin.Models.Repositories
             }
         }
 
+        public async Task<int> UpdateCategoryNamesAsync(List<Category> categories)
+        {
+            foreach (var category in categories)
+            {
+                var categoryToUpdate = await _bethanysPieShopDbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == category.CategoryId);
+
+                if (categoryToUpdate != null)
+                {
+                    categoryToUpdate.Name = category.Name;
+
+                    _bethanysPieShopDbContext.Categories.Update(categoryToUpdate);
+                }
+            }
+
+            int result = await _bethanysPieShopDbContext.SaveChangesAsync();
+
+            _memoryCache.Remove(AllCategoriesCacheName);
+
+            return result;
+        }
     }
 }
