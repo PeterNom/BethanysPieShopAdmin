@@ -55,6 +55,7 @@ namespace BethanysPieShopAdmin.Controllers
             {
                 ModelState.AddModelError("", $"Adding the category failed, please try again! Error: {ex.Message}");
             }
+
             return View(category);
         }
     }
