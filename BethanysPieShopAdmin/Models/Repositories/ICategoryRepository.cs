@@ -9,5 +9,6 @@ namespace BethanysPieShopAdmin.Models.Repositories
         Task<Category?> GetCategoryByIdAsync(int id);
         Task<int> AddCategoryAsync(Category category);
         Task<int> UpdateCategoryAsync(Category category);
+        Task<int> DeleteCategoryAsync(int id);
     }
 }

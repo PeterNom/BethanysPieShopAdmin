@@ -69,5 +69,20 @@ namespace BethanysPieShopAdmin.Models.Repositories
             }
         }
 
+        public async Task<int> DeleteCategoryAsync(int id)
+        {
+            var categoryToDelete = await _bethanysPieShopDbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+
+            if (categoryToDelete != null)
+            {
+                _bethanysPieShopDbContext.Categories.Remove(categoryToDelete);
+                return await _bethanysPieShopDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"The category to delete can't be found.");
+            }
+        }
+
     }
 }

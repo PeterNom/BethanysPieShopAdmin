@@ -53,5 +53,19 @@ namespace BethanysPieShopAdmin.Models.Repositories
             }
         }
 
+        public async Task<int> DeletePieAsync(int id)
+        {
+            var pieToDelete = await _bethanysPieShopDbContext.Pies.FirstOrDefaultAsync(c => c.PieId == id);
+
+            if (pieToDelete != null)
+            {
+                _bethanysPieShopDbContext.Pies.Remove(pieToDelete);
+                return await _bethanysPieShopDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"The pie to delete can't be found.");
+            }
+        }
     }
 }
