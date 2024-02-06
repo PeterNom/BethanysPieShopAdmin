@@ -42,5 +42,32 @@ namespace BethanysPieShopAdmin.Models.Repositories
 
             return await _bethanysPieShopDbContext.SaveChangesAsync();
         }
+
+        public async Task<int> UpdateCategoryAsync(Category category)
+        {
+            bool categoryWithSameNameExist = await _bethanysPieShopDbContext.Categories.AnyAsync(c => c.Name == category.Name && c.CategoryId != category.CategoryId);
+
+            if (categoryWithSameNameExist)
+            {
+                throw new Exception("A category with the same name already exists");
+            }
+
+            var categoryToUpdate = await _bethanysPieShopDbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == category.CategoryId);
+
+            if (categoryToUpdate != null)
+            {
+
+                categoryToUpdate.Name = category.Name;
+                categoryToUpdate.Description = category.Description;
+
+                _bethanysPieShopDbContext.Categories.Update(categoryToUpdate);
+                return await _bethanysPieShopDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"The category to update can't be found.");
+            }
+        }
+
     }
 }
